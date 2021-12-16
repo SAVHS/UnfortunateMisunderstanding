@@ -5,6 +5,8 @@ from panda3d.core import WindowProperties
 from panda3d.core import Spotlight, DirectionalLight, AmbientLight
 from panda3d.core import Vec4, Vec3
 
+#from GameObj import *
+
 class Game(ShowBase):
 	def __init__(self):
 		ShowBase.__init__(self)
@@ -13,6 +15,7 @@ class Game(ShowBase):
 		self.setWindow()
 		self.setLighting()
 		self.loadWorld()
+		self.loadThings()
 
 	def setWindow(self):
 		self.disableMouse()
@@ -33,8 +36,39 @@ class Game(ShowBase):
 		self.render.setShaderAuto()
 
 	def loadWorld(self):
-		self.box = loader.loadModel("models/Environment/environment")
-		self.box.reparentTo(self.render)
-			
+		self.world = loader.loadModel("models/Environment/environment")
+		self.world.reparentTo(self.render)
+
+	def loadThings(self):
+		self.tower = loader.loadModel("models/room_industrial")
+		self.tower.reparentTo(render)
+		self.tower.setScale(0.075)
+		self.tower.setPos(0, 2, 5)
+
+		self.tower2 = loader.loadModel("models/room_industrial")
+		self.tower2.reparentTo(render)
+		self.tower2.setScale(0.075)
+		self.tower2.setPos(0, -6, 5)
+
+		self.tower3 = loader.loadModel("models/room_industrial")
+		self.tower3.reparentTo(render)
+		self.tower3.setScale(0.075)
+		self.tower3.setPos(4, -3.4, 5)
+
+		self.tower4 = loader.loadModel("models/room_industrial")
+		self.tower4.reparentTo(render)
+		self.tower4.setScale(0.075)
+		self.tower4.setPos(-4, -3.4, 5)
+
+		self.tower5 = loader.loadModel("models/room_industrial")
+		self.tower5.reparentTo(render)
+		self.tower5.setScale(0.075)
+		self.tower5.setPos(-4, 0, 5)
+
+		self.tower6 = loader.loadModel("models/room_industrial")
+		self.tower6.reparentTo(render)
+		self.tower6.setScale(0.075)
+		self.tower6.setPos(4, 0, 5)
+
 game = Game()
 game.run()
