@@ -1,9 +1,9 @@
+from panda3d.ai import *
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from direct.actor import Actor
 from panda3d.ai import AIWorld
 from panda3d.core import WindowProperties
-from panda3d.ai import *
 from panda3d.core import Spotlight, DirectionalLight, AmbientLight
 from panda3d.core import Vec4, Vec3
 
@@ -18,7 +18,7 @@ class Game(ShowBase):
 		self.setLighting()
 		self.loadWorld()
 		self.loadTowers()
-		self.loadActors()
+		self.loadSeeker()
 		self.setAI()
 
 	def setWindow(self):
@@ -74,6 +74,20 @@ class Game(ShowBase):
 		self.tower6.setScale(0.075)
 		self.tower6.setPos(4, 0, 5)
 
+	def loadSeeker(self):
+		# Seeker
+		ralphStartPos = Vec3(-10, 0, 0)
+		self.seeker = Actor("models/act_p3d_chan", {"run": "models/a_p3d_chan_run"})
+		self.seeker.reparentTo(render)
+		self.seeker.setScale(0.5)
+		self.seeker.setPos(ralphStartPos)
+		# Target
+		self.target = loader.loadModel("models/teapot")
+		self.target.setColor(1, 0, 0)
+		self.target.setPos(5, 0, 0)
+		self.target.setScale(1)
+		self.target.reparentTo(render)
+
 	def setAI(self):
 		# Creating AI World
 		self.AIworld = AIWorld(render)
@@ -92,9 +106,5 @@ class Game(ShowBase):
 	def AIUpdate(self, task):
 		self.AIworld.update()
 		return Task.cont
-
-	def loadActors(self):
-		self.demitri = Actor("")
-
 game = Game()
 game.run()
