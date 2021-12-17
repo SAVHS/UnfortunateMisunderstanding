@@ -1,7 +1,9 @@
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from direct.actor import Actor
+from panda3d.ai import AIWorld
 from panda3d.core import WindowProperties
+from panda3d.ai import *
 from panda3d.core import Spotlight, DirectionalLight, AmbientLight
 from panda3d.core import Vec4, Vec3
 
@@ -15,7 +17,9 @@ class Game(ShowBase):
 		self.setWindow()
 		self.setLighting()
 		self.loadWorld()
-		self.loadThings()
+		self.loadTowers()
+		self.loadActors()
+		self.setAI()
 
 	def setWindow(self):
 		self.disableMouse()
@@ -39,7 +43,7 @@ class Game(ShowBase):
 		self.world = loader.loadModel("models/Environment/environment")
 		self.world.reparentTo(self.render)
 
-	def loadThings(self):
+	def loadTowers(self):
 		self.tower = loader.loadModel("models/room_industrial")
 		self.tower.reparentTo(render)
 		self.tower.setScale(0.075)
@@ -69,6 +73,28 @@ class Game(ShowBase):
 		self.tower6.reparentTo(render)
 		self.tower6.setScale(0.075)
 		self.tower6.setPos(4, 0, 5)
+
+	def setAI(self):
+		# Creating AI World
+		self.AIworld = AIWorld(render)
+
+		self.AIchar = AICharacter("seeker", self.seeker, 100, 0.05, 5)
+		self.AIworld.addAiChar(self.AIchar)
+		self.AIbehaviors = self.AIchar.getAiBehaviors()
+
+		self.AIbehaviors.seek(self.target)
+		self.seeker.loop("run")
+
+		# AI World update
+		taskMgr.add(self.AIUpdate, "AIUpdate")
+
+	# to update the AIWorld
+	def AIUpdate(self, task):
+		self.AIworld.update()
+		return Task.cont
+
+	def loadActors(self):
+		self.demitri = Actor("")
 
 game = Game()
 game.run()
