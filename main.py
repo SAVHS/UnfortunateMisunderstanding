@@ -84,6 +84,7 @@ class Game(ShowBase):
 		cNodePanda = self.seeker.attachNewNode(CollisionNode('cnode_panda'))
 		cNodePanda.node().addSolid(CollisionSphere(0, 0, 0.8, 0.8))
 		cNodePanda.show()
+		self.seeker.setTag('seekerTag', '1')
 		self.picker = CollisionTraverser()
 		self.picker.showCollisions(render)
 		self.pq = CollisionHandlerQueue()
