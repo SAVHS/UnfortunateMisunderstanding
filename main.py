@@ -5,6 +5,8 @@ from direct.actor.Actor import Actor
 from panda3d.ai import AIWorld
 from panda3d.core import WindowProperties
 from panda3d.core import Spotlight, DirectionalLight, AmbientLight
+from direct.gui.OnscreenText import OnscreenText
+from direct.gui.DirectGui import *
 from panda3d.core import Vec4, Vec3
 from panda3d.core import CollisionTraverser, CollisionHandlerPusher, CollisionSphere, CollisionTube, CollisionNode
 from panda3d.core import *
@@ -21,6 +23,31 @@ class Game(ShowBase):
 		self.loadTowers()
 		self.loadSeeker()
 		self.setAI()
+		self.setUI()
+
+	def setUI(self):
+		textObject = OnscreenText(text="Health", pos=(-0.9, -0.95), scale=0.04)
+		agentOrange = loader.loadFont('AgentOrange.ttf')
+		textObject.setFont(agentOrange)
+		def incBar(arg):
+		    bar['value'] += arg
+		    text = "Health:" + str(bar['value']) + '%'
+		    textObject.setText(text)
+
+		# Create a frame
+		frame = DirectFrame(text="main", scale=0.0001)
+		# Add button
+		bar = DirectWaitBar(text="", value=50, pos=(-0.9, -.4, .4))
+
+		# Create 4 buttons
+		button_1 = DirectButton(text="+1", scale=0.05, pos=(-.3, .6, 0),
+		                        command=incBar, extraArgs=[1])
+		button_10 = DirectButton(text="+10", scale=0.05, pos=(0, .6, 0),
+		                         command=incBar, extraArgs=[10])
+		button_m1 = DirectButton(text="-1", scale=0.05, pos=(0.3, .6, 0),
+		                         command=incBar, extraArgs=[-1])
+		button_m10 = DirectButton(text="-10", scale=0.05, pos=(0.6, .6, 0),
+		                          command=incBar, extraArgs=[-10])
 
 	def setWindow(self):
 		self.disableMouse()
