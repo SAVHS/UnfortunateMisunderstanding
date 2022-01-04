@@ -22,32 +22,9 @@ class Game(ShowBase):
 		self.loadWorld()
 		self.loadTowers()
 		self.loadSeeker()
+		self.loadBot()
 		self.setAI()
-		self.setUI()
 
-	def setUI(self):
-		textObject = OnscreenText(text="Health", pos=(-0.9, -0.95), scale=0.04)
-		agentOrange = loader.loadFont('AgentOrange.ttf')
-		textObject.setFont(agentOrange)
-		def incBar(arg):
-		    bar['value'] += arg
-		    text = "Health:" + str(bar['value']) + '%'
-		    textObject.setText(text)
-
-		# Create a frame
-		frame = DirectFrame(text="main", scale=0.0001)
-		# Add button
-		bar = DirectWaitBar(text="", value=50, pos=(-0.9, -.4, .4))
-
-		# Create 4 buttons
-		button_1 = DirectButton(text="+1", scale=0.05, pos=(-.3, .6, 0),
-		                        command=incBar, extraArgs=[1])
-		button_10 = DirectButton(text="+10", scale=0.05, pos=(0, .6, 0),
-		                         command=incBar, extraArgs=[10])
-		button_m1 = DirectButton(text="-1", scale=0.05, pos=(0.3, .6, 0),
-		                         command=incBar, extraArgs=[-1])
-		button_m10 = DirectButton(text="-10", scale=0.05, pos=(0.6, .6, 0),
-		                          command=incBar, extraArgs=[-10])
 
 	def setWindow(self):
 		self.disableMouse()
@@ -77,6 +54,13 @@ class Game(ShowBase):
 		self.tower.setScale(0.075)
 		self.tower.setPos(0, 6, .25)
 
+		def incBar(arg):
+			bar['value'] += arg
+			str(bar['value']) + '%'
+
+		bar = DirectWaitBar(text="", value=100, pos=(-0.025, 0, .62))
+		bar.setScale(0.1)
+
 		self.tower2 = loader.loadModel("models/room_industrial")
 		self.tower2.reparentTo(render)
 		self.tower2.setScale(0.075)
@@ -101,6 +85,32 @@ class Game(ShowBase):
 		self.tower6.reparentTo(render)
 		self.tower6.setScale(0.075)
 		self.tower6.setPos(5, 3, 0.25)
+
+	def loadBot(self):
+		self.bot = Actor("models/SimpleEnemy/simpleEnemy", {"walk": "models/SimpleEnemy/simpleEnemy-walk"})
+		self.bot.reparentTo(render)
+		self.bot.setPos(Vec3(1, 0, 0))
+
+		cNodeBot = self.seeker.attachNewNode(CollisionNode('cnode_Bot'))
+		cNodeBot.node().addSolid(CollisionSphere(0, 0, 0.8, 0.8))
+		cNodeBot.show()
+		self.bot.setTag('botTag', '2')
+		self.picker = CollisionTraverser()
+		self.picker.showCollisions(render)
+		self.pq = CollisionHandlerQueue()
+
+		self.pickerNode = CollisionNode('mouseRay')
+		self.pickerNP = camera.attachNewNode(self.pickerNode)
+		self.pickerNode.setFromCollideMask(BitMask32.bit(2))
+		self.bot.setCollideMask(BitMask32.bit(2))
+
+		self.pickerRay = CollisionRay()
+		self.pickerNode.addSolid(self.pickerRay)
+		self.picker.addCollider(self.pickerNP, self.pq)
+
+		self.accept("mouse1", self.mouseClick)
+		# Target
+		self.target = self.tower2
 
 	def loadSeeker(self):
 		# Seeker
@@ -138,8 +148,13 @@ class Game(ShowBase):
 		self.AIworld.addAiChar(self.AIchar)
 		self.AIbehaviors = self.AIchar.getAiBehaviors()
 
+		self.AIchar2 = AICharacter("bot", self.bot, 100, 1, 1)
+		self.AIworld.addAiChar(self.AIchar2)
+		self.AIbehaviors = self.AIchar2.getAiBehaviors()
+
 		self.AIbehaviors.seek(self.target)
 		self.seeker.loop("run")
+		self.bot.loop("walk")
 
 		# AI World update
 		taskMgr.add(self.AIUpdate, "AIUpdate")

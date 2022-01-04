@@ -1,3 +1,5 @@
+from panda3d.core import *
+
 class GroundObject():
 	def __init__(self, pos, modelName, modelAnims, health, damage, damageType, targetType, colliderName, speed):
         self.actor = Actor(modelName, modelAnims)
@@ -19,8 +21,6 @@ class GroundObject():
             self.health = self.maxHealth
 
 
-class Tower():
-    pass
 
 class FlyingObject():
     pass

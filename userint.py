@@ -4,19 +4,19 @@ from direct.gui.DirectGui import *
 
 from panda3d.core import TextNode
 
-# Add some text
 
 
-textObject = OnscreenText(text="Every day in every way \nI'm getting better and better.", pos=(-0.4, 0), scale=0.07)
 
-agentOrange = loader.loadFont('AgentOrange.ttf')
-textObject.setFont(agentOrange)
+def incBar(arg):
+    bar['value'] += arg
+    str(bar['value']) + '%'
+    
 
-# Callback function to set  text
-def setText():
-        bk_text = "Button Clicked"
-        textObject.setText(bk_text)
+# Create a frame
 
+# Add button
+bar = DirectWaitBar(text="", value=100, pos=(0, 0, .9))
+bar.setScale(0.3)
 
 
 # Run the tutorial
