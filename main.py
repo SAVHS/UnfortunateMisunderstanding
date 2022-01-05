@@ -55,6 +55,8 @@ class Game(ShowBase):
 		self.tower.reparentTo(render)
 		self.tower.setScale(0.075)
 		self.tower.setPos(0, 6, .25)
+		towerColliderNode = CollisionNode("tower")
+		towerColliderNode.addSolid(CollisionBox())
 
 		def incBar(arg):
 			bar['value'] += arg
