@@ -15,6 +15,8 @@ from panda3d.core import *
 class Game(ShowBase):
 	def __init__(self):
 		ShowBase.__init__(self)
+		self.cTrav = CollisionTraverser()
+		self.pusher = CollisionHandlerPusher()
 		self.camera.setPos(0, 0, 40)
 		self.camera.setP(-90)
 		self.setWindow()
@@ -89,53 +91,33 @@ class Game(ShowBase):
 	def loadBot(self):
 		self.bot = Actor("models/SimpleEnemy/simpleEnemy", {"walk": "models/SimpleEnemy/simpleEnemy-walk"})
 		self.bot.reparentTo(render)
-		self.bot.setPos(Vec3(1, 0, 0))
+		self.bot.setPos(Vec3(-10, 3, 0))
 
-		cNodeBot = self.seeker.attachNewNode(CollisionNode('cnode_Bot'))
-		cNodeBot.node().addSolid(CollisionSphere(0, 0, 0.8, 0.8))
-		cNodeBot.show()
-		self.bot.setTag('botTag', '2')
-		self.picker = CollisionTraverser()
-		self.picker.showCollisions(render)
-		self.pq = CollisionHandlerQueue()
+		botColliderNode = CollisionNode("bot")
+		botColliderNode.addSolid(CollisionSphere(0, 0, 1, 1))
+		collider2 = self.bot.attachNewNode(botColliderNode)
+		base.pusher.addCollider(collider2, self.bot)
+		base.cTrav.addCollider(collider2, self.pusher)
+		collider2.show()
 
-		self.pickerNode = CollisionNode('mouseRay')
-		self.pickerNP = camera.attachNewNode(self.pickerNode)
-		self.pickerNode.setFromCollideMask(BitMask32.bit(2))
-		self.bot.setCollideMask(BitMask32.bit(2))
+		self.target2 = self.tower3
 
-		self.pickerRay = CollisionRay()
-		self.pickerNode.addSolid(self.pickerRay)
-		self.picker.addCollider(self.pickerNP, self.pq)
 
-		self.accept("mouse1", self.mouseClick)
-		# Target
-		self.target = self.tower2
 
 	def loadSeeker(self):
 		# Seeker
 		self.seeker = Actor("models/act_p3d_chan", {"run": "models/a_p3d_chan_run"})
 		self.seeker.reparentTo(render)
 		
-		self.seeker.setPos(Vec3(0, 0, 0))
-		cNodePanda = self.seeker.attachNewNode(CollisionNode('cnode_panda'))
-		cNodePanda.node().addSolid(CollisionSphere(0, 0, 0.8, 0.8))
-		cNodePanda.show()
-		self.seeker.setTag('seekerTag', '1')
-		self.picker = CollisionTraverser()
-		self.picker.showCollisions(render)
-		self.pq = CollisionHandlerQueue()
+		self.seeker.setPos(Vec3(10, 3, 0))
 
-		self.pickerNode = CollisionNode('mouseRay')
-		self.pickerNP = camera.attachNewNode(self.pickerNode)
-		self.pickerNode.setFromCollideMask(BitMask32.bit(1))
-		self.seeker.setCollideMask(BitMask32.bit(1))
+		seekerColliderNode = CollisionNode("seeker")
+		seekerColliderNode.addSolid(CollisionSphere(0, 0, 0.5, 0.5))
+		collider = self.seeker.attachNewNode(seekerColliderNode)
+		base.pusher.addCollider(collider, self.seeker)
+		base.cTrav.addCollider(collider, self.pusher)
+		collider.show()
 
-		self.pickerRay = CollisionRay()
-		self.pickerNode.addSolid(self.pickerRay)
-		self.picker.addCollider(self.pickerNP, self.pq)
-
-		self.accept("mouse1", self.mouseClick)
 		# Target
 		self.target = self.tower
 		
@@ -144,17 +126,20 @@ class Game(ShowBase):
 		# Creating AI World
 		self.AIworld = AIWorld(render)
 
-		self.AIchar = AICharacter("seeker", self.seeker, 100, 1, 1)
+		self.AIchar = AICharacter("seeker", self.seeker, 30, 1, 1)
 		self.AIworld.addAiChar(self.AIchar)
 		self.AIbehaviors = self.AIchar.getAiBehaviors()
 
-		self.AIchar2 = AICharacter("bot", self.bot, 100, 1, 1)
+		self.AIchar2 = AICharacter("bot", self.bot, 50, 1, 1)
 		self.AIworld.addAiChar(self.AIchar2)
-		self.AIbehaviors = self.AIchar2.getAiBehaviors()
+		self.AIbehaviors2 = self.AIchar2.getAiBehaviors()
 
 		self.AIbehaviors.seek(self.target)
+		self.AIbehaviors2.seek(self.target2)
+
 		self.seeker.loop("run")
-		self.bot.loop("walk")
+		self.bot.loop("run")
+
 
 		# AI World update
 		taskMgr.add(self.AIUpdate, "AIUpdate")
@@ -164,22 +149,6 @@ class Game(ShowBase):
 		self.AIworld.update()
 		return Task.cont
 
-	def mouseClick(self):
-		print('mouse click')
-		# check if we have access to the mouse
-		if base.mouseWatcherNode.hasMouse():
 
-			# get the mouse position
-			mpos = base.mouseWatcherNode.getMouse()
-
-			# set the position of the ray based on the mouse position
-			self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
-			self.picker.traverse(render)
-			# if we have hit something sort the hits so that the closest is first and highlight the node
-			if self.pq.getNumEntries() > 0:
-				self.pq.sortEntries()
-				pickedObj = self.pq.getEntry(0).getIntoNodePath()
-				print('click on ' + pickedObj.getName())
-		
 game = Game()
 game.run()
