@@ -8,7 +8,7 @@ from panda3d.core import Spotlight, DirectionalLight, AmbientLight
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import *
 from panda3d.core import Vec4, Vec3
-from panda3d.core import CollisionTraverser, CollisionHandlerPusher, CollisionSphere, CollisionTube, CollisionNode
+from panda3d.core import CollisionTraverser, CollisionBox, CollisionHandlerPusher, CollisionSphere, CollisionTube, CollisionNode
 from panda3d.core import *
 #from GameObj import *
 
@@ -56,7 +56,7 @@ class Game(ShowBase):
 		self.tower.setScale(0.075)
 		self.tower.setPos(0, 6, .25)
 		towerColliderNode = CollisionNode("tower")
-		towerColliderNode.addSolid(CollisionBox())
+		towerColliderNode.addSolid(CollisionBox(0, 3)
 
 		def incBar(arg):
 			bar['value'] += arg
