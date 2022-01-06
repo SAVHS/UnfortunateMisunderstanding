@@ -53,7 +53,7 @@ class Game(ShowBase):
 	def loadTowers(self):
 		self.tower = loader.loadModel("models/room_industrial")
 		self.tower.reparentTo(render)
-		self.tower.setScale(0.075)
+		self.tower.setScale(0.075)   
 		self.tower.setPos(0, 6, .25)
 		towerColliderNode = CollisionNode("tower")
 		towerColliderNode.addSolid(CollisionBox(0, 3)
