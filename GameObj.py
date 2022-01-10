@@ -1,15 +1,23 @@
 from panda3d.core import *
 
 class GroundObject():
-	def __init__(self, pos, modelName, modelAnims, health, damage, damageType, targetType, colliderName, speed):
+	def __init__(self, pos, modelName, modelAnims, health, damage, colliderName, maxHealth, maxSpeed):
         self.actor = Actor(modelName, modelAnims)
         self.actor.reparentTo(render)
         self.actor.setPos(pos)
-        self.health = health
+
+        self.maxHealth = maxHealth
+        self.health = maxHealth
+        
         self.damage = damage
-        self.damageType = damageType
-        self.speed = speed
-        self.targetType = targetType
+        
+        self.maxSpeed = maxSpeed
+
+        self.velocity = Vec3(0, 0, 0)
+        self.acceleration = 300.0
+
+        
+
         colliderNode = CollisionNode(colliderName)
         colliderNode.addSolid(CollisionSphere(0, 0, 0, 0.3))
         self.collider = self.actor.attachNewNode(colliderNode)

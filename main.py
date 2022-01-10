@@ -26,7 +26,37 @@ class Game(ShowBase):
 		self.loadSeeker()
 		self.loadBot()
 		self.setAI()
+		
+		colliderNode = CollisionNode("actor")
+		colliderNode.addSolid(CollisionSphere(0, 0, 0, 0.3))
+		collider = self.seeker.attachNewNode(colliderNode)
 
+		base.pusher.addCollider(collider, self.seeker)
+		base.cTrav.addCollider(collider, self.pusher)
+
+		wallSolid = CollisionTube(-8.0, 0, 0, 8.0, 0, 0, 0.2)
+		wallNode = CollisionNode("wall")
+		wallNode.addSolid(wallSolid)
+		wall = render.attachNewNode(wallNode)
+		wall.setY(8.0)
+
+		wallSolid = CollisionTube(-8.0, 0, 0, 8.0, 0, 0, 0.2)
+		wallNode = CollisionNode("wall")
+		wallNode.addSolid(wallSolid)
+		wall = render.attachNewNode(wallNode)
+		wall.setY(-8.0)
+
+		wallSolid = CollisionTube(0, -8.0, 0, 0, 8.0, 0, 0.2)
+		wallNode = CollisionNode("wall")
+		wallNode.addSolid(wallSolid)
+		wall = render.attachNewNode(wallNode)
+		wall.setX(8.0)
+
+		wallSolid = CollisionTube(0, -8.0, 0, 0, 8.0, 0, 0.2)
+		wallNode = CollisionNode("wall")
+		wallNode.addSolid(wallSolid)
+		wall = render.attachNewNode(wallNode)
+		wall.setX(-8.0)
 
 	def setWindow(self):
 		self.disableMouse()
@@ -95,12 +125,12 @@ class Game(ShowBase):
 		self.bot.reparentTo(render)
 		self.bot.setPos(Vec3(-10, 3, 0))
 
-		botColliderNode = CollisionNode("bot")
-		botColliderNode.addSolid(CollisionSphere(0, 0, 1, 1))
-		collider2 = self.bot.attachNewNode(botColliderNode)
-		base.pusher.addCollider(collider2, self.bot)
-		base.cTrav.addCollider(collider2, self.pusher)
-		collider2.show()
+		# botColliderNode = CollisionNode("bot")
+		# botColliderNode.addSolid(CollisionSphere(0, 0, 1, 1))
+		# collider2 = self.bot.attachNewNode(botColliderNode)
+		# base.pusher.addCollider(collider2, self.bot)
+		# base.cTrav.addCollider(collider2, self.pusher)
+		# collider2.show()
 
 		self.target2 = self.tower3
 
@@ -113,12 +143,12 @@ class Game(ShowBase):
 		
 		self.seeker.setPos(Vec3(10, 3, 0))
 
-		seekerColliderNode = CollisionNode("seeker")
-		seekerColliderNode.addSolid(CollisionSphere(0, 0, 0.5, 0.5))
-		collider = self.seeker.attachNewNode(seekerColliderNode)
-		base.pusher.addCollider(collider, self.seeker)
-		base.cTrav.addCollider(collider, self.pusher)
-		collider.show()
+		# seekerColliderNode = CollisionNode("seeker")
+		# seekerColliderNode.addSolid(CollisionSphere(0, 0, 0.5, 0.5))
+		# collider = self.seeker.attachNewNode(seekerColliderNode)
+		# base.pusher.addCollider(collider, self.seeker)
+		# base.cTrav.addCollider(collider, self.pusher)
+		# collider.show()
 
 		# Target
 		self.target = self.tower
@@ -145,6 +175,7 @@ class Game(ShowBase):
 
 		# AI World update
 		taskMgr.add(self.AIUpdate, "AIUpdate")
+		
 
 	# to update the AIWorld
 	def AIUpdate(self, task):
