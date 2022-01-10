@@ -10,7 +10,7 @@ from direct.gui.DirectGui import *
 from panda3d.core import Vec4, Vec3
 from panda3d.core import CollisionTraverser, CollisionBox, CollisionHandlerPusher, CollisionSphere, CollisionTube, CollisionNode
 from panda3d.core import *
-#from GameObj import *
+from GameObj import *
 
 class Game(ShowBase):
 	def __init__(self):
@@ -23,16 +23,8 @@ class Game(ShowBase):
 		self.setLighting()
 		self.loadWorld()
 		self.loadTowers()
-		self.loadSeeker()
-		self.loadBot()
 		self.setAI()
-		
-		colliderNode = CollisionNode("actor")
-		colliderNode.addSolid(CollisionSphere(0, 0, 0, 0.3))
-		collider = self.seeker.attachNewNode(colliderNode)
 
-		base.pusher.addCollider(collider, self.seeker)
-		base.cTrav.addCollider(collider, self.pusher)
 
 		wallSolid = CollisionTube(-8.0, 0, 0, 8.0, 0, 0, 0.2)
 		wallNode = CollisionNode("wall")
@@ -120,67 +112,8 @@ class Game(ShowBase):
 		self.tower6.setScale(0.075)
 		self.tower6.setPos(5, 3, 0.25)
 
-	def loadBot(self):
-		self.bot = Actor("models/SimpleEnemy/simpleEnemy", {"walk": "models/SimpleEnemy/simpleEnemy-walk"})
-		self.bot.reparentTo(render)
-		self.bot.setPos(Vec3(-10, 3, 0))
-
-		# botColliderNode = CollisionNode("bot")
-		# botColliderNode.addSolid(CollisionSphere(0, 0, 1, 1))
-		# collider2 = self.bot.attachNewNode(botColliderNode)
-		# base.pusher.addCollider(collider2, self.bot)
-		# base.cTrav.addCollider(collider2, self.pusher)
-		# collider2.show()
-
-		self.target2 = self.tower3
-
-
-
-	def loadSeeker(self):
-		# Seeker
-		self.seeker = Actor("models/act_p3d_chan", {"run": "models/a_p3d_chan_run"})
-		self.seeker.reparentTo(render)
-		
-		self.seeker.setPos(Vec3(10, 3, 0))
-
-		# seekerColliderNode = CollisionNode("seeker")
-		# seekerColliderNode.addSolid(CollisionSphere(0, 0, 0.5, 0.5))
-		# collider = self.seeker.attachNewNode(seekerColliderNode)
-		# base.pusher.addCollider(collider, self.seeker)
-		# base.cTrav.addCollider(collider, self.pusher)
-		# collider.show()
-
-		# Target
-		self.target = self.tower
-		
-
-	def setAI(self):
-		# Creating AI World
-		self.AIworld = AIWorld(render)
-
-		self.AIchar = AICharacter("seeker", self.seeker, 30, 1, 1)
-		self.AIworld.addAiChar(self.AIchar)
-		self.AIbehaviors = self.AIchar.getAiBehaviors()
-
-		self.AIchar2 = AICharacter("bot", self.bot, 50, 1, 1)
-		self.AIworld.addAiChar(self.AIchar2)
-		self.AIbehaviors2 = self.AIchar2.getAiBehaviors()
-
-		self.AIbehaviors.seek(self.target)
-		self.AIbehaviors2.seek(self.target2)
-
-		self.seeker.loop("run")
-		self.bot.loop("run")
-
-
-		# AI World update
-		taskMgr.add(self.AIUpdate, "AIUpdate")
-		
-
-	# to update the AIWorld
-	def AIUpdate(self, task):
-		self.AIworld.update()
-		return Task.cont
+	
+	
 
 
 game = Game()
