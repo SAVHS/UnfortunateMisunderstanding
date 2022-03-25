@@ -1,3 +1,15 @@
+from panda3d.ai import *
+from direct.showbase.ShowBase import ShowBase
+from direct.task import Task
+from direct.actor.Actor import Actor
+from panda3d.ai import AIWorld
+from panda3d.core import WindowProperties
+from panda3d.core import Spotlight, DirectionalLight, AmbientLight
+from direct.gui.OnscreenText import OnscreenText
+from direct.gui.DirectGui import *
+from panda3d.core import Vec4, Vec3
+from panda3d.core import CollisionTraverser, CollisionBox, CollisionHandlerPusher, CollisionSphere, CollisionTube, CollisionNode
+from panda3d.core import *
 from panda3d.core import *
 
 class GameObject():
@@ -42,7 +54,7 @@ class GameObject():
 		self.collider = None
 
 class Seeker(GameObject):
-	GameObject.__init__(self, Vec3(0, 0, 0), "models/SimpleEnemy/simpleEnemy", 
+	GameObject.__init__(self, Vec3(0, 0, 0), "models/SimpleEnemy/simpleEnemy",
 	{
 		"walk": "models/SimpleEnemy/simpleEnemy-walk"
 		},

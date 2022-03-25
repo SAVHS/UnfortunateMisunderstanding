@@ -23,7 +23,7 @@ class Game(ShowBase):
 		self.setLighting()
 		self.loadWorld()
 		self.loadTowers()
-		self.setAI()
+		#self.setAI()
 
 
 		wallSolid = CollisionTube(-8.0, 0, 0, 8.0, 0, 0, 0.2)
